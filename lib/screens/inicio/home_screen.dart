@@ -354,20 +354,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.pushNamed(context, '/diario');
             },
           ),
-          
-          // NOVO: Item do perfil no menu também
-          _buildDrawerItem(
-            icon: Icons.person_outline,
-            title: 'Meu Perfil',
-            subtitle: 'Configurações da conta',
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, '/perfil-usuario');
-            },
-          ),
-          
+
           // Spacer para empurrar o "Sair" para baixo
-          Spacer(),
+          const Spacer(),
           
           // Divisor antes do "Sair"
           Divider(height: 1, color: Colors.grey[200]),
