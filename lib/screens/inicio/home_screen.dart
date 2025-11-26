@@ -474,9 +474,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  List<Widget> _buildActionButtonsForRole() {
-    final userRole = ApiService.currentUser?.role;
-    List<Widget> buttons = [];
+List<Widget> _buildActionButtonsForRole() {
+  final userRole = ApiService.currentUser?.role;
+  List<Widget> buttons = [];
 
     // Botões para psicólogos
     if (userRole == 'psychologist') {
@@ -527,8 +527,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    return buttons;
-  }
+  return buttons;
+}
 
   Widget _buildActionButton({
     required IconData icon,
