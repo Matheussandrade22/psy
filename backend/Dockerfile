@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 FROM dart:stable AS build
 
 WORKDIR /app
@@ -27,4 +28,30 @@ RUN mkdir -p /app/data
 EXPOSE 8080
 
 # Executa o servidor
+=======
+# Use a imagem oficial do Dart
+FROM dart:stable AS build
+
+# Diretório de trabalho
+WORKDIR /app
+
+# Copie os arquivos do projeto
+COPY pubspec.* ./
+RUN dart pub get
+
+COPY . .
+
+# Compile o projeto
+RUN dart compile exe bin/server.dart -o server
+
+# Imagem final menor
+FROM scratch
+COPY --from=build /runtime/ /
+COPY --from=build /app/server /app/
+
+# Exponha a porta (ajuste se necessário)
+EXPOSE 8080
+
+# Execute o servidor
+>>>>>>> e95bd29 (Add Dockerfile for Railway deployment)
 CMD ["/app/server"]
