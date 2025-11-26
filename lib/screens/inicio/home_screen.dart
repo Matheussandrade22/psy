@@ -463,48 +463,62 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  List<Widget> _buildActionButtonsForRole() {
-    final userRole = ApiService.currentUser?.role;
-    List<Widget> buttons = [];
+List<Widget> _buildActionButtonsForRole() {
+  final userRole = ApiService.currentUser?.role;
+  List<Widget> buttons = [];
 
-    // Botões para pacientes
-    if (userRole != 'psychologist') {
-      buttons.add(
-        _buildActionButton(
-          icon: Icons.calendar_today,
-          label: 'Agendamento',
-          color: Colors.blue[600]!,
-          onTap: () {
-            Navigator.pushNamed(context, '/agendar-consulta');
-          },
-        ),
-      );
-      buttons.add(
-        _buildActionButton(
-          icon: Icons.people,
-          label: 'Psicólogos',
-          color: Colors.green[600]!,
-          onTap: () {
-            Navigator.pushNamed(context, '/psicologos-disponiveis');
-          },
-        ),
-      );
-    }
-
-    // Botão comum a todos
+  // Botões para pacientes
+  if (userRole != 'psychologist') {
     buttons.add(
       _buildActionButton(
-        icon: Icons.book,
-        label: 'Diário',
-        color: Colors.purple[600]!,
+        icon: Icons.calendar_today,
+        label: 'Agendamento',
+        color: Colors.blue[600]!,
         onTap: () {
-          Navigator.pushNamed(context, '/diario');
+          Navigator.pushNamed(context, '/agendar-consulta');
         },
       ),
     );
-
-    return buttons;
+    buttons.add(
+      _buildActionButton(
+        icon: Icons.people,
+        label: 'Psicólogos',
+        color: Colors.green[600]!,
+        onTap: () {
+          Navigator.pushNamed(context, '/psicologos-disponiveis');
+        },
+      ),
+    );
   }
+
+  // Botões para psicólogos
+  if (userRole == 'psychologist') {
+    buttons.add(
+      _buildActionButton(
+        icon: Icons.event_available,
+        label: 'Minha Consultas',
+        color: Colors.blue[600]!,
+        onTap: () {
+          Navigator.pushNamed(context, '/consultas-agendadas');
+        },
+      ),
+    );
+  }
+
+  // Botão comum a todos
+  buttons.add(
+    _buildActionButton(
+      icon: Icons.book,
+      label: 'Diário',
+      color: Colors.purple[600]!,
+      onTap: () {
+        Navigator.pushNamed(context, '/diario');
+      },
+    ),
+  );
+
+  return buttons;
+}
 
   Widget _buildActionButton({
     required IconData icon,
