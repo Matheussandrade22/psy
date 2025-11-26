@@ -296,39 +296,76 @@ void main(List<String> args) async {
         headers: {'Content-Type': 'application/json'});
   });
 
+  // Rota para buscar agendamentos de um psicólogo específico
+  app.get('/appointments/psychologist/<psychologistId>',
+      (Request req, String psychologistId) async {
+    final userIdFromToken = _verifyToken(req.headers['Authorization']);
+    if (userIdFromToken == null) {
+      return Response.unauthorized(
+          jsonEncode({'message': 'Token inválido ou ausente'}),
+          headers: {'Content-Type': 'application/json'});
+    }
+
+    // Filtra os agendamentos pelo ID do psicólogo
+    final psychologistAppointments =
+        appointments.where((a) => a['psicologoId'] == psychologistId).toList();
+
+    // Adiciona o nome do paciente a cada agendamento
+    final appointmentsWithPatientNames = psychologistAppointments.map((appt) {
+      final patient =
+          users.firstWhere((u) => u['id'] == appt['userId'], orElse: () => {});
+      final newAppt = Map<String, dynamic>.from(appt);
+      if (patient.isNotEmpty) {
+        newAppt['patientName'] = patient['name'];
+      } else {
+        newAppt['patientName'] = 'Paciente não encontrado';
+      }
+      return newAppt;
+    }).toList();
+
+    return Response.ok(jsonEncode(appointmentsWithPatientNames),
+        headers: {'Content-Type': 'application/json'});
+  });
+
   app.post('/appointments', (Request req) async {
     final body = await req.readAsString();
     final data = jsonDecode(body) as Map<String, dynamic>;
     final userIdFromToken = _verifyToken(req.headers['Authorization']);
     if (userIdFromToken == null) {
-      return Response(401,
-          body: jsonEncode({'message': 'Token inválido ou ausente'}),
+      return Response.unauthorized(
+          jsonEncode({'message': 'Token inválido ou ausente'}),
           headers: {'Content-Type': 'application/json'});
     }
-    // Basic validation (userId may be omitted now)
-    for (final f in ['psicologo', 'data', 'horario', 'modalidade']) {
+
+    // Validação dos campos obrigatórios
+    final requiredFields = ['psicologoId', 'psicologo', 'data', 'horario', 'modalidade'];
+    for (final f in requiredFields) {
       if (!data.containsKey(f) || (data[f]?.toString().isEmpty ?? true)) {
-        return Response(400,
+        return Response.badRequest(
             body: jsonEncode({'message': 'Campo obrigatório ausente: $f'}),
             headers: {'Content-Type': 'application/json'});
       }
     }
+
     final newAppt = {
       'id': 'a${appointments.length + 1}',
-      'userId': (data['userId'] ?? userIdFromToken),
+      'userId': data['userId'] ?? userIdFromToken,
+      'psicologoId': data['psicologoId'], // Chave para a busca do psicólogo
       'psicologo': data['psicologo'],
       'especialidade': data['especialidade'] ?? '',
-      'avaliacao': (data['avaliacao'] ?? 4.8).toDouble(),
+      'avaliacao': (data['avaliacao'] ?? 0.0).toDouble(),
       'totalAvaliacoes': data['totalAvaliacoes'] ?? 0,
-      'data': data['data'], // ISO string
+      'data': data['data'],
       'horario': data['horario'],
       'local': data['local'] ?? '',
       'imagemPsicologo': data['imagemPsicologo'] ?? '',
-      'modalidade': data['modalidade'] ?? 'Presencial',
+      'modalidade': data['modalidade'],
       'motivo': data['motivo'] ?? '',
     };
+
     appointments.add(newAppt);
     _save('appointments', appointments);
+
     return Response(201,
         body: jsonEncode(newAppt),
         headers: {'Content-Type': 'application/json'});

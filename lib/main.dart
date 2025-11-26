@@ -10,6 +10,7 @@ import 'screens/inicio/home_screen.dart';
 import 'screens/psicologos/psicologos_disponiveis_screen.dart';
 import 'screens/consultas/agendar_consulta_screen.dart';
 import 'screens/consultas/consultas_agendadas_screen.dart';
+import 'screens/consultas/consultas_psicologo_screen.dart';
 import 'screens/diario/diario_screen.dart';
 import 'screens/perfil/perfil_usuario_screen.dart';
 import 'screens/perfil/sobre_nos_screen.dart';
@@ -78,6 +79,7 @@ class MyApp extends StatelessWidget {
         '/novo-psicologo': (context) => NovoPsicologoScreen(),
         '/inicio': (context) => HomeScreen(),
         '/consultas-agendadas': (context) => ConsultasAgendadasScreen(),
+        '/consultas-psicologo': (context) => ConsultasPsicologoScreen(),
         '/psicologos-disponiveis': (context) => PsicologosDisponiveisScreen(),
         '/agendar-consulta': (context) => AgendarConsultaScreen(),
         '/diario': (context) => DiarioScreen(),

@@ -323,6 +323,17 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           
+          if (isPsychologist)
+            _buildDrawerItem(
+              icon: Icons.event_note,
+              title: 'Minhas Consultas',
+              subtitle: 'Consultas agendadas com você',
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/consultas-psicologo');
+              },
+            ),
+
           if (!isPsychologist)
             _buildDrawerItem(
               icon: Icons.event_available,
@@ -467,8 +478,21 @@ class _HomeScreenState extends State<HomeScreen> {
     final userRole = ApiService.currentUser?.role;
     List<Widget> buttons = [];
 
+    // Botões para psicólogos
+    if (userRole == 'psychologist') {
+      buttons.add(
+        _buildActionButton(
+          icon: Icons.event_note,
+          label: 'Minhas Consultas',
+          color: Colors.blue[600]!,
+          onTap: () {
+            Navigator.pushNamed(context, '/consultas-psicologo');
+          },
+        ),
+      );
+    }
     // Botões para pacientes
-    if (userRole != 'psychologist') {
+    else {
       buttons.add(
         _buildActionButton(
           icon: Icons.calendar_today,

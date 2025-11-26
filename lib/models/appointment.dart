@@ -1,6 +1,9 @@
+import 'package:intl/intl.dart';
+
 class Appointment {
   final String id;
   final String psicologo;
+  final String? patientName; // Novo campo para o nome do paciente
   final String especialidade;
   final double avaliacao;
   final int totalAvaliacoes;
@@ -14,6 +17,7 @@ class Appointment {
   Appointment({
     required this.id,
     required this.psicologo,
+    this.patientName,
     required this.especialidade,
     required this.avaliacao,
     required this.totalAvaliacoes,
@@ -25,9 +29,14 @@ class Appointment {
     required this.motivo,
   });
 
+  // Getters para data e hora formatadas
+  String get formattedDate => DateFormat('d \'de\' MMMM \'de\' y', 'pt_BR').format(data);
+  String get formattedTime => horario;
+
   factory Appointment.fromJson(Map<String, dynamic> json) => Appointment(
         id: (json['id'] ?? '') as String,
         psicologo: (json['psicologo'] ?? '') as String,
+        patientName: json['patientName'] as String?, // Mapeando o novo campo
         especialidade: (json['especialidade'] ?? '') as String,
         avaliacao: (json['avaliacao'] is int)
             ? (json['avaliacao'] as int).toDouble()

@@ -164,6 +164,7 @@ class ApiService {
     final uri = Uri.parse('$baseUrl/appointments');
     final payload = {
       'userId': currentUser!.id,
+      'psicologoId': psicologo.id,
       'psicologo': psicologo.name,
       'especialidade': psicologo.specialty,
       'avaliacao': psicologo.rating,
@@ -192,6 +193,20 @@ class ApiService {
       return list.map((e) => Appointment.fromJson(e as Map<String, dynamic>)).toList();
     }
     throw Exception('Erro ao carregar consultas');
+  }
+
+  static Future<List<Appointment>> getAppointmentsForPsychologist(
+      String psychologistId) async {
+    if (currentUser == null) throw Exception('Usuário não autenticado');
+    final uri = Uri.parse('$baseUrl/appointments/psychologist/$psychologistId');
+    final resp = await http.get(uri, headers: _headers(withAuth: true));
+    if (resp.statusCode == 200) {
+      final list = jsonDecode(resp.body) as List<dynamic>;
+      return list
+          .map((e) => Appointment.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+    throw Exception('Erro ao carregar consultas do psicólogo');
   }
 
   // Diário
